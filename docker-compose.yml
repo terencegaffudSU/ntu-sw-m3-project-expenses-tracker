@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  java_app:
+    container_name: java_app
+    image: terencegaffudsu/java_app
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_URL=jdbc:postgresql://psql-db:5432/postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+    depends_on:
+      - psql-db
+
+  psql-db:
+    container_name: psql-db
+    image: postgres:12
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: expense_tracker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
+  # need to set the volume for the initial tables for the database. you need an SQL file for the commands and sample data.
+  # check this out: https://onexlab-io.medium.com/docker-compose-postgres-initdb-ba0021deef76
